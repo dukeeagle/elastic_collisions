@@ -4,8 +4,9 @@ Version using wx widgets.  Geoff Tovey, England, 11 March 2014.
 ================================================================================"""
 
 from __future__ import division, print_function
-import visual as vs   # for 3D panel
-import wx   # for widgets
+#import visual as vs
+import vpython as vs  # for 3D panel
+import wxPython as wx   # for widgets
 
 # Draw window & 3D pane =================================================
 

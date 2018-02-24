@@ -1,3 +1,4 @@
+#! python2
 from visual import *
 import visual as vs
 #from vpython import *
@@ -6,6 +7,8 @@ from random import randint
 L = 12
 scene.range = L
 T = 0.1
+
+colors = [color.red, color.green, color.blue, color.yellow, color.cyan, color.magenta]
 
 walls = []
 balls = []
@@ -20,18 +23,56 @@ x1 = scene.width + 5
 pan = win.panel
 pan.SetSize((1024,720))
 
+#temp_ball = sphere(pos=vector(0,0,0), radius=0.5, color=color.green)
+
 wx.StaticText( pan, pos=(x1,10),
 label = "Welcome to Luke's Zone.\n Select your desired \nparameters and \nget in there!" )
 
+
 wx.StaticText( pan, pos=(x1,105),
-label = "# of balls" )
-value = wx.TextCtrl( pan, pos=(x1, 120))
+label = "# of Balls:" )
+value = wx.TextCtrl( pan, pos=(x1, 125))
+
+#Setting average kinetic energy / temperature
+wx.StaticText( pan, pos=(x1, 170),
+label = "Size of Cube:")
+slider = wx.Slider( pan, pos=(x1, 195))
+slider.SetValue(12)
+slider.SetMax(24)
+slider.SetMin(0.1)
+
+
+def change_walls(evt):
+    global walls
+    global L
+    L = slider.GetValue()
+    #print(slider.GetValue())
+    walls = [] #clear out the previous list of walls
+
+    wall_r = box(pos=vector((L/2)+(T/2),0,0), axis=vector(-1,0,0), length=T, height=L, width=L, color=color.red) #right wall
+    wall_l = box(pos=vector((-L/2)+(T/2),0,0), axis=vector(1,0,0), length=T, height=L, width=L, color=color.yellow) #left wall
+
+    wall_t = box(pos=vector(0,(L/2)+(T/2),0), axis=vector(0,-1,0), length=T, height=L+T, width=L+T, color=color.blue) #top wall
+    wall_b = box(pos=vector(0, (-L/2)+(T/2),0), axis=vector(0,1,0), length=T, height=L+T, width=L+T, color=color.green) #bottom wall
+
+    wall_back = box(pos=vector(0,0,(-L/2)+(T/2)), axis=vector(0,0,1), length=T, height=L+T, width=L+T, color=color.red) #back wall
+    wall_f = box(pos=vector(0,0,(L/2)+(T/2)), axis=vector(0,0,-1), length=T, height=L+T, width=L+T, color=color.yellow, visible=False) #front wall
+
+    walls = [wall_r, wall_l, wall_t, wall_b, wall_back, wall_f]
+
+
+slider.Bind(wx.EVT_SCROLL, change_walls)
 
 def clear_balls():
+    global slider
+    print(slider.GetValue())
+    #global temp_ball
     for ball in balls:
-        ball.visible = False
+        #ball.visible = False
+        #ball.delete
         ball.pos = vector(100,100,100)
-        del ball
+        #del ball
+        #del temp_ball
         #print(ball)
 
 
@@ -41,13 +82,20 @@ def hHelp(evt): # re "HELP" button
 """, 'HELP',  wx.OK  )
 
 def configure_new_instance(evt):
+    global scene
     global value
     new_balls = int(value.GetValue())
     print("Gotcha!")
     print(new_balls)
-    clear_balls()
+
+    scene.delete()
+
+    scene = vs.display( window=win, width=830, height=690, forward=-vs.vector(1,1,2))
+
+    #clear_balls()
     #new_win = vs.window(width=1024, height=720, menus=False, title='ELASTIC COLLISIONS BBY v2')
     create_ball(new_balls)
+    change_walls(0)
 
 def Button1( label, y, func):
    bb = wx.Button( pan, label=label, pos=(x1+5,y), size = (150,40))
@@ -65,7 +113,7 @@ def create_ball(quantity):
         ball_velocity_z = randint(-15,15)
         ball_radius = random.uniform(0.5,1.2)
 
-        ball = sphere(pos=vector(ball_pos,0,0), radius=ball_radius, color=color.cyan)
+        ball = sphere(pos=vector(ball_pos,0,0), radius=ball_radius, color=colors[randint(0,5)])
         ball.mass = ball_radius * 1.2
         #ball.velocity = vector(ball_velocity,randint(-15,15),randint(-15,15))
         ball.velocity=vector(ball_velocity,ball_velocity_y,ball_velocity_z)
