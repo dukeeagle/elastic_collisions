@@ -47,7 +47,7 @@ def change_walls(evt):
     global L
     L = slider.GetValue()
     #print(slider.GetValue())
-    walls = [] #clear out the previous list of walls
+    walls[:] = [] #clear out the previous list of walls
 
     wall_r = box(pos=vector((L/2)+(T/2),0,0), axis=vector(-1,0,0), length=T, height=L, width=L, color=color.red) #right wall
     wall_l = box(pos=vector((-L/2)+(T/2),0,0), axis=vector(1,0,0), length=T, height=L, width=L, color=color.yellow) #left wall
@@ -68,12 +68,13 @@ def clear_balls():
     print(slider.GetValue())
     #global temp_ball
     for ball in balls:
-        #ball.visible = False
+        ball.visible = False
         #ball.delete
-        ball.pos = vector(100,100,100)
+        #ball.pos = vector(100,100,100)
         #del ball
         #del temp_ball
         #print(ball)
+    balls[:] = []
 
 
 def hHelp(evt): # re "HELP" button
@@ -92,7 +93,7 @@ def configure_new_instance(evt):
 
     scene = vs.display( window=win, width=830, height=690, forward=-vs.vector(1,1,2))
 
-    #clear_balls()
+    clear_balls()
     #new_win = vs.window(width=1024, height=720, menus=False, title='ELASTIC COLLISIONS BBY v2')
     create_ball(new_balls)
     change_walls(0)
